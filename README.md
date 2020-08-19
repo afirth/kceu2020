@@ -1,8 +1,10 @@
 ## About this repo
 
-Contains slides and some demo code for the Kubecon EU 2020 talk ("Ingress on the Rails"](https://kccnceu20.sched.com/event/ea4d05e0e543c633f29c00148a20ea5f)
+Contains [slides](SLIDES_ingress_on_the_rails.pdf) and some demo code for the Kubecon EU 2020 talk ("Ingress on the Rails"](https://kccnceu20.sched.com/event/ea4d05e0e543c633f29c00148a20ea5f)
 
 The demo code sets up external-dns using the deployment pattern described in the talk, of calling `helm template | kustomize | kubectl apply` to support multiple K8s clusters. Similar tools are emerging like [helm post-rendering](https://helm.sh/docs/topics/advanced/#post-rendering) and [Ship](https://github.com/replicatedhq/ship)
+
+If there is demand for more samples, please open an issue with which components would be most useful -- sample helm-values and patches can be found in the slides and will likely be specific to your environment anyway.
 
 ## Using this code
 
