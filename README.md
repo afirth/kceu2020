@@ -8,6 +8,9 @@ The demo code sets up external-dns using the deployment pattern described in the
 
 Hopefully everything works as is on GKE except you need to change the project ID - replace all instances of afirth-kceu2020 with your project ID. Helm 2, sops, and GNU make are required for code generation.
 
+## Extending this code
+We manage each component (external-dns, cert-manager, prometheus-operator, oauth2-proxy, and ingress-nginx) as its own repository. This has the disadvantage of duplicating a lot of the generator and pipeline code, and requiring lots of updates to add another cluster, but the advantage of breaking one thing at a time.
+
 ## Clusters
 
 `./clusters` has some scripts to make some GKE clusters if you want to demo this as is.
@@ -19,3 +22,4 @@ Hopefully everything works as is on GKE except you need to change the project ID
 -add CD
 -add external-dns
 -add sample ingress
+-link sched talk

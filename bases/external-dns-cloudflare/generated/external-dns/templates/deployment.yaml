@@ -1,0 +1,104 @@
+---
+# Source: external-dns/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns-cloudflare
+  labels: 
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.2.0
+    app.kubernetes.io/instance: external-dns-cloudflare
+    app.kubernetes.io/managed-by: Tiller
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app.kubernetes.io/name: external-dns
+      app.kubernetes.io/instance: external-dns-cloudflare
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/name: external-dns
+        helm.sh/chart: external-dns-3.2.0
+        app.kubernetes.io/instance: external-dns-cloudflare
+        app.kubernetes.io/managed-by: Tiller
+      annotations:
+        
+        
+    spec:      
+      securityContext: 
+        fsGroup: 1001
+        runAsNonRoot: true
+        runAsUser: 1001
+        
+      serviceAccountName: external-dns-cloudflare
+      containers:
+        - name: external-dns
+          image: "docker.io/bitnami/external-dns:0.7.2-debian-10-r6"
+          imagePullPolicy: "IfNotPresent"
+          args:
+            # Generic arguments
+            - --log-level=debug
+            - --log-format=json
+            - --policy=sync
+            - --provider=cloudflare
+            - --registry=txt
+            - --interval=1m
+            - --source=ingress
+            # Cloudflare arguments
+          env:
+            # Cloudflare environment variables
+            - name: CF_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: external-dns-cloudflare
+                  key: cloudflare_api_token
+                  optional: true
+            - name: CF_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: external-dns-cloudflare
+                  key: cloudflare_api_key
+                  optional: true
+            - name: CF_API_EMAIL
+              value: ""
+          ports:
+            - name: http
+              containerPort: 7979
+          readinessProbe: 
+            failureThreshold: 6
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+            
+          livenessProbe: 
+            failureThreshold: 2
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+            
+          securityContext: 
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            
+          resources:
+            limits:
+              cpu: 200m
+              memory: 50Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+            
+          volumeMounts:
+      volumes:
