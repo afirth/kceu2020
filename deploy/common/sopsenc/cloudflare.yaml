@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: cloudflare
+    namespace: external-dns
+type: Opaque
+stringData:
+    CF_API_EMAIL: owner@example.com
+    CF_API_KEY: ENC[AES256_GCM,data:q3qj8DFwIYhDFcNnsJedMXSCVd0SQRfbJzIApjnm,iv:BRlBcznsJgodGVzxhsyWosTEG0GHrJg41jK9VnFVW/o=,tag:EAf+62EQYoI9yplpX1n/Iw==,type:str]
+sops:
+    kms: []
+    gcp_kms:
+    -   resource_id: projects/afirth-kceu2020/locations/global/keyRings/cloudbuild/cryptoKeys/sops
+        created_at: '2020-08-19T07:10:18Z'
+        enc: CiQA0TI4MDj0ESAkmSoQPgJgYfFzsQnWmZXBaYhaKNTCESroCW4SSQAkDXN3IEGKr/u2dhRgHT5Iv7iZ2c6w3L+jFmuCRRgvlQekVDarIuNDV5EQXCr6HDvlw2HMLTX/AWXL7Tr9r95rog8z8jzN+Ww=
+    azure_kv: []
+    lastmodified: '2020-08-19T07:10:19Z'
+    mac: ENC[AES256_GCM,data:ycrQkd6+kh7h2yRYARQWbsSsqFq5hFiuFIL3AQCx1oVBzV19UGS5iCNP2GteipBff7elEqp1fBr7GYNLM+bBdu4C8h4l2ZBmxHpqAki3Yj6ThTHBs+hUquZoB9IfRPJ1RYj99iXmlWhGHNth87D9+/Jxx3Q2x+ymdheqAyIEW2M=,iv:OwQPW3HlI4k+O+lgcKPWQEkOgHHGK8cPuhPGM++acxg=,tag:H+AoG16DHvzW7Se2D5cwRQ==,type:str]
+    pgp: []
+    encrypted_suffix: KEY
+    version: 3.5.0

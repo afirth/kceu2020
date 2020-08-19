@@ -1,0 +1,49 @@
+steps:
+  # github checks are a shallow clone
+  - name: 'gcr.io/cloud-builders/git'
+    id: git-init
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        git init && git add . &&  git -c "user.email=na" commit -am 'cloudbuild check'
+
+  # build all stages
+  - name: gcr.io/$PROJECT_ID/kustomize
+    id: kustomize-build
+    waitFor:
+      - git-init
+    entrypoint: bash   # use bash so we don't need to set a cluster
+    args:
+      - "-c"
+      - |
+         ./build/build.sh $_TARGET_CLUSTERS
+
+  # Don't deploy if files would change after running kustomize build
+  # if this breaks, you should run make and commit yourself
+  - name: 'gcr.io/cloud-builders/git'
+    id: git-diff
+    waitFor:
+      - kustomize-build
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        git diff; git status && [[ -z $(git status -s) ]] || exit 1
+
+  # Check all secrets can be decrypted
+  - name: gcr.io/$PROJECT_ID/gcloud-sops-slim
+    id: sops-decrypt-test
+    dir: deploy/bases
+    waitFor: ['-'] #parallel
+    args:
+      - validate
+
+substitutions:
+  _TARGET_CLUSTERS: >-
+    afirth-kceu2020/bravo
+    afirth-kceu2020/delta
+
+tags:
+  - check
+  - external-dns

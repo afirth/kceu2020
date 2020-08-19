@@ -1,0 +1,5 @@
+# creation rules are evaluated sequentially, the first match wins
+creation_rules:
+  # all files using sops should include sopsenc in the path to support in-place decryption
+  - gcp_kms: projects/afirth-kceu2020/locations/global/keyRings/cloudbuild/cryptoKeys/sops
+    path_regex: .*sopsenc

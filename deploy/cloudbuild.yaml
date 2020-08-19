@@ -1,0 +1,32 @@
+steps:
+  # decrypt secrets
+  # see the dockerfile in this repo
+  - name: gcr.io/$PROJECT_ID/gcloud-sops-slim
+    id: sops-decrypt
+    dir: deploy/bases
+    args:
+      - decrypt
+
+    # image from https://github.com/GoogleCloudPlatform/cloud-builders-community/tree/master/kustomize#building-this-builder
+  - name: gcr.io/$PROJECT_ID/kustomize
+    id: deploy
+    waitFor:
+      - sops-decrypt
+    dir: deploy/$PROJECT_ID/$_CLUSTER
+    args:
+      - build
+      - --load_restrictor=none
+    env:
+      - "APPLY=true"
+
+options:
+  env:
+    - "CLOUDSDK_COMPUTE_ZONE=europe-west1-d"
+    - "CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER"
+
+substitutions:
+  _CLUSTER: bravo
+
+tags:
+  - deploy
+  - external-dns
