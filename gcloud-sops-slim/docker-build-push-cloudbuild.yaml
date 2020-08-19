@@ -1,0 +1,22 @@
+steps:
+- name: gcr.io/cloud-builders/docker
+  dir: gcloud-sops-slim
+  args:
+    - build
+    - --build-arg
+    - VER=${_APP_VERSION}
+    - --tag=gcr.io/$PROJECT_ID/$_IMG_NAME
+    - --tag=gcr.io/$PROJECT_ID/$_IMG_NAME:${_APP_VERSION}
+    - .
+
+images:
+  - gcr.io/$PROJECT_ID/$_IMG_NAME
+  - gcr.io/$PROJECT_ID/$_IMG_NAME:${_APP_VERSION}
+
+substitutions:
+  _IMG_NAME: gcloud-sops-slim
+  _APP_VERSION: 3.5.0
+
+tags:
+  - gcloud-sops-slim
+  - docker-build-push

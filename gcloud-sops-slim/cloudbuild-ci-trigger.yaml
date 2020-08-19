@@ -1,0 +1,12 @@
+# This cloudbuild trigger additionally checks that a secret can be decrypted
+# Therefore the secret must be valid
+name: gcloud-sops-slim
+description: 'gcloud-sops-slim: CI'
+filename: gcloud-sops-slim/CI-cloudbuild.yaml
+github:
+  name: kceu2020
+  owner: afirth
+  push:
+    branch: *
+includedFiles:
+- gcloud-sops-slim/*

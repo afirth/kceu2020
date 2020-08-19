@@ -1,0 +1,10 @@
+description: 'utility-images: gcloud-sops-slim: Push to ^master$ branch - docker build'
+filename: gcloud-sops-slim/docker-build-push-cloudbuild.yaml
+github:
+  name: kceu2020
+  owner: afirth
+  push:
+    branch: ^master$
+includedFiles:
+- gcloud-sops-slim/*
+name: gcloud-sops-slim-build
