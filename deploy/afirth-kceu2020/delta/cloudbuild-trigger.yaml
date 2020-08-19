@@ -1,0 +1,13 @@
+name: deploy-external-dns-dev-delta
+description: Deploy Dev (master) - Delta
+filename: deploy/cloudbuild.yaml
+github:
+  name: kceu2020
+  owner: afirth
+  push:
+    # deploy on master push
+    branch: ^master$
+    #sample for semver prerelease tags
+    #tag: ^\d+\.\d+\.\d+-[0-9A-Za-z-.]+$
+substitutions:
+  _CLUSTER: delta

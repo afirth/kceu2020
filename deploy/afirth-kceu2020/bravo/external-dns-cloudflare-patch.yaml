@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns-cloudflare
+  namespace: external-dns-cloudflare
+spec:
+  template:
+    spec:
+      containers:
+      - name: external-dns
+        env:
+        - name: CF_API_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare
+              key: CF_API_EMAIL
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare
+              key: CF_API_KEY
+        - name: EXTERNAL_DNS_TXT_OWNER_ID
+          value: gke_afirth-kceu2020_europe-west1-d_bravo
+        - name: EXTERNAL_DNS_DOMAIN_FILTER
+          value: example.com

@@ -1,0 +1,11 @@
+name: deploy-external-dns-stable-bravo
+description: Deploy Stable (semver tag) - Bravo
+filename: deploy/cloudbuild.yaml
+github:
+  name: kceu2020
+  owner: afirth
+  push:
+    # deploy on semver release
+    tag: ^\d+\.\d+\.\d+$
+substitutions:
+  _CLUSTER: bravo

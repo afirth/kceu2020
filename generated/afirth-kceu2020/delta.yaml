@@ -1,0 +1,271 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    repo: afirth/kceu2020
+  name: external-dns-cloudflare
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    repo: afirth/kceu2020
+  labels:
+    app.kubernetes.io/instance: external-dns-cloudflare
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.2.0
+  name: external-dns-cloudflare
+  namespace: external-dns-cloudflare
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  annotations:
+    repo: afirth/kceu2020
+  labels:
+    app.kubernetes.io/instance: external-dns-cloudflare
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.2.0
+  name: external-dns-cloudflare
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - pods
+  - nodes
+  - endpoints
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - gateways
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - zalando.org
+  resources:
+  - routegroups
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - zalando.org
+  resources:
+  - routegroups/status
+  verbs:
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    repo: afirth/kceu2020
+  labels:
+    app.kubernetes.io/instance: external-dns-cloudflare
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.2.0
+  name: external-dns-cloudflare
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: external-dns-cloudflare
+subjects:
+- kind: ServiceAccount
+  name: external-dns-cloudflare
+  namespace: external-dns-cloudflare
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    repo: afirth/kceu2020
+  name: cloudflare
+  namespace: external-dns-cloudflare
+sops:
+  azure_kv: []
+  encrypted_suffix: KEY
+  gcp_kms:
+  - created_at: "2020-08-19T07:10:18Z"
+    enc: CiQA0TI4MDj0ESAkmSoQPgJgYfFzsQnWmZXBaYhaKNTCESroCW4SSQAkDXN3IEGKr/u2dhRgHT5Iv7iZ2c6w3L+jFmuCRRgvlQekVDarIuNDV5EQXCr6HDvlw2HMLTX/AWXL7Tr9r95rog8z8jzN+Ww=
+    resource_id: projects/afirth-kceu2020/locations/global/keyRings/cloudbuild/cryptoKeys/sops
+  kms: []
+  lastmodified: "2020-08-19T07:10:19Z"
+  mac: ENC[AES256_GCM,data:ycrQkd6+kh7h2yRYARQWbsSsqFq5hFiuFIL3AQCx1oVBzV19UGS5iCNP2GteipBff7elEqp1fBr7GYNLM+bBdu4C8h4l2ZBmxHpqAki3Yj6ThTHBs+hUquZoB9IfRPJ1RYj99iXmlWhGHNth87D9+/Jxx3Q2x+ymdheqAyIEW2M=,iv:OwQPW3HlI4k+O+lgcKPWQEkOgHHGK8cPuhPGM++acxg=,tag:H+AoG16DHvzW7Se2D5cwRQ==,type:str]
+  pgp: []
+  version: 3.5.0
+stringData:
+  CF_API_EMAIL: owner@example.com
+  CF_API_KEY: ENC[AES256_GCM,data:q3qj8DFwIYhDFcNnsJedMXSCVd0SQRfbJzIApjnm,iv:BRlBcznsJgodGVzxhsyWosTEG0GHrJg41jK9VnFVW/o=,tag:EAf+62EQYoI9yplpX1n/Iw==,type:str]
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    repo: afirth/kceu2020
+  labels:
+    app.kubernetes.io/instance: external-dns-cloudflare
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.2.0
+  name: external-dns-cloudflare
+  namespace: external-dns-cloudflare
+spec:
+  ports:
+  - name: http
+    port: 7979
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/instance: external-dns-cloudflare
+    app.kubernetes.io/name: external-dns
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    repo: afirth/kceu2020
+  labels:
+    app.kubernetes.io/instance: external-dns-cloudflare
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.2.0
+  name: external-dns-cloudflare
+  namespace: external-dns-cloudflare
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: external-dns-cloudflare
+      app.kubernetes.io/name: external-dns
+  template:
+    metadata:
+      annotations:
+        repo: afirth/kceu2020
+      labels:
+        app.kubernetes.io/instance: external-dns-cloudflare
+        app.kubernetes.io/managed-by: Tiller
+        app.kubernetes.io/name: external-dns
+        helm.sh/chart: external-dns-3.2.0
+    spec:
+      containers:
+      - args:
+        - --log-level=debug
+        - --log-format=json
+        - --policy=sync
+        - --provider=cloudflare
+        - --registry=txt
+        - --interval=1m
+        - --source=ingress
+        env:
+        - name: CF_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: cloudflare_api_token
+              name: external-dns-cloudflare
+              optional: true
+        - name: CF_API_EMAIL
+          value: ""
+          valueFrom:
+            secretKeyRef:
+              key: CF_API_EMAIL
+              name: cloudflare
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: CF_API_KEY
+              name: cloudflare
+              optional: true
+        - name: EXTERNAL_DNS_TXT_OWNER_ID
+          value: gke_afirth-kceu2020_europe-west1-d_bravo
+        - name: EXTERNAL_DNS_DOMAIN_FILTER
+          value: example.com
+        image: docker.io/bitnami/external-dns:0.7.2-debian-10-r6
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: external-dns
+        ports:
+        - containerPort: 7979
+          name: http
+        readinessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 200m
+            memory: 50Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts: null
+      securityContext:
+        fsGroup: 1001
+        runAsNonRoot: true
+        runAsUser: 1001
+      serviceAccountName: external-dns-cloudflare
+      volumes: null
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    repo: afirth/kceu2020
+  labels:
+    app.kubernetes.io/instance: external-dns-cloudflare
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.2.0
+  name: external-dns-cloudflare
+  namespace: external-dns-cloudflare
+spec:
+  endpoints:
+  - path: /metrics
+    port: http
+  namespaceSelector:
+    matchNames:
+    - external-dns-cloudflare
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: external-dns-cloudflare
+      app.kubernetes.io/name: external-dns
