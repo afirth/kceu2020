@@ -1,6 +1,6 @@
 ## About this repo
 
-Contains slides and some demo code for the Kubecon EU 2020 talk "Ingress on the Rails"
+Contains slides and some demo code for the Kubecon EU 2020 talk ("Ingress on the Rails"](https://kccnceu20.sched.com/event/ea4d05e0e543c633f29c00148a20ea5f)
 
 The demo code sets up external-dns using the deployment pattern described in the talk, of calling `helm template | kustomize | kubectl apply` to support multiple K8s clusters. Similar tools are emerging like [helm post-rendering](https://helm.sh/docs/topics/advanced/#post-rendering) and [Ship](https://github.com/replicatedhq/ship)
 
@@ -33,21 +33,13 @@ SERVICE_ACCOUNT="${PROJECT_NUM}@cloudbuild.gserviceaccount.com"
 gcloud kms keys add-iam-policy-binding sops --keyring='cloudbuild' --location='global' --member=serviceAccount:${SERVICE_ACCOUNT} --role='roles/cloudkms.cryptoKeyDecrypter' --project=${PROJECT_ID}
 ```
 
+## Cloudbuild triggers
+
+Triggers and pipelines are included for CI and CD of both the deployment to clusters and the sops image. The sops readme has some more info if you're just getting started with cloud-build. Other docker-image based pipeline tools should be easily adapatable.
+
 ## Extending this code
 We manage each component (external-dns, cert-manager, prometheus-operator, oauth2-proxy, and ingress-nginx) as its own repository. This has the disadvantage of duplicating a lot of the generator and pipeline code, and requiring lots of updates to add another cluster, but the advantage of breaking one thing at a time.
 
 ## Clusters
 
 `./clusters` has some scripts to make some GKE clusters if you want to demo this as is.
-
-#TODO
-o-add sops image
-o-add sops.md
-x-add kms setup
-o-add triggers + info
-o-add diffing CI
-o-add CD
-x-add external-dns
-o-add sample ingress
-o-link sched talk
-o-fixup cloudflare secret
